@@ -19,3 +19,6 @@ logs/
 # Temp files
 temp-files/
 *.tmp
+
+# Large files
+doc/设备手册汇总.zip
