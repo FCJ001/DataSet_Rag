@@ -22,6 +22,9 @@ temp-files/
 
 # Large files
 doc/设备手册汇总.zip
+models/
+huggingface_cache/
+volumes/
 
 # 教案（不需要推送）
 教案/

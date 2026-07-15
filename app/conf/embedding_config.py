@@ -1,10 +1,23 @@
 # 导入核心依赖：数据类、环境变量读取、路径处理
 from dataclasses import dataclass
 import os
-from dotenv import load_dotenv
+from pathlib import Path
+from dotenv import load_dotenv, find_dotenv
 
 # 提前加载.env配置文件（保持和原代码一致，只需执行一次）
 load_dotenv()
+
+# 获取项目根目录（.env 文件所在目录），用于解析相对路径
+_project_root = Path(find_dotenv()).parent
+
+def _resolve_path(path: str) -> str:
+    """将相对路径解析为绝对路径（相对于项目根目录）"""
+    if not path:
+        return path
+    p = Path(path)
+    if p.is_absolute():
+        return str(p)
+    return str((_project_root / p).resolve())
 
 # 定义Embedding配置（适配BGE-M3的所有配置，类名embedding_config）
 @dataclass
@@ -16,7 +29,7 @@ class EmbeddingConfig:
 
 # 实例化配置对象，和原代码lm_config风格保持一致
 embedding_config = EmbeddingConfig(
-    bge_m3_path=os.getenv("BGE_M3_PATH"),
+    bge_m3_path=_resolve_path(os.getenv("BGE_M3_PATH")),
     bge_m3=os.getenv("BGE_M3"),
     bge_device=os.getenv("BGE_DEVICE"),
     # 特殊处理：将.env中的1/0转为布尔值，兼容常见的数字/字符串格式

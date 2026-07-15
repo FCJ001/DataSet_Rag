@@ -1,3 +1,4 @@
+import os
 from pymilvus.model.hybrid import BGEM3EmbeddingFunction
 from app.core.logger import logger
 from app.conf.embedding_config import embedding_config
@@ -19,6 +20,9 @@ def get_bge_m3_ef():
     # 从环境变量加载配置，无配置则使用默认值
     # 本地有可以使用本地地址！ 没有使用 "BAAI/bge-m3" 会自动下载！ 如果云端部署也可以使用url地址！
     model_name = embedding_config.bge_m3_path or "BAAI/bge-m3"
+    # 如果是本地路径则转为绝对路径，避免FlagEmbedding/huggingface_hub解析失败
+    if model_name and os.path.exists(model_name):
+        model_name = os.path.abspath(model_name)
     device = embedding_config.bge_device or "cpu"
     use_fp16 = embedding_config.bge_fp16 or False
 
